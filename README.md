@@ -1,7 +1,6 @@
-# BTC RPC Explorer
+# Pyrk RPC Explorer
 
-[![npm version][npm-ver-img]][npm-ver-url] [![NPM downloads][npm-dl-img]][npm-dl-url]
-
+A fork of: [https://github.com/janoside/btc-rpc-explorer](https://github.com/janoside/btc-rpc-explorer)
 
 Simple, database-free Bitcoin blockchain explorer, via RPC. Built with Node.js, express, bootstrap-v4.
 
