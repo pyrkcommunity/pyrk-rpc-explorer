@@ -1,3 +1,5 @@
+## DO NOT USE THIS YET - IT IS CURRENTLY BEING MODIFIED
+
 # Pyrk RPC Explorer
 
 A fork of: [https://github.com/janoside/btc-rpc-explorer](https://github.com/janoside/btc-rpc-explorer)
