@@ -128,7 +128,7 @@ block content
 							div.row
 								div.summary-table-label Size
 								div.summary-table-content.text-monospace
-									if (result.getrawtransaction.vsize != result.getrawtransaction.size)
+									if (result.getrawtransaction.vsize && result.getrawtransaction.vsize != result.getrawtransaction.size)
 										span #{result.getrawtransaction.vsize.toLocaleString()} 
 										small vB
 										br
@@ -218,7 +218,7 @@ block content
 									div.row
 										div.summary-table-label Fee Rate
 										div.summary-table-content.text-monospace
-											if (result.getrawtransaction.vsize != result.getrawtransaction.size)
+											if (result.getrawtransaction.vsize && result.getrawtransaction.vsize != result.getrawtransaction.size)
 												span #{utils.addThousandsSeparators(new DecimalRounded(totalInputValue).minus(totalOutputValue).dividedBy(result.getrawtransaction.vsize).times(100000000))} 
 												small sat/vB
 												br

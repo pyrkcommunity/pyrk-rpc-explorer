@@ -228,6 +228,18 @@ function getMempoolInfo() {
 	return tryCacheThenRpcApi(miscCache, "getMempoolInfo", ONE_SEC, rpcApi.getMempoolInfo);
 }
 
+function getMasternodeStats() {
+	return tryCacheThenRpcApi(miscCache, "getMasternodeStats", ONE_SEC, function() {
+		return rpcApi.getMasternodeStats();
+	});
+}
+
+function getMasternodeList() {
+	return tryCacheThenRpcApi(miscCache, "getMasternodeList", ONE_SEC, function() {
+		return rpcApi.getMasternodeList();
+	});
+}
+
 function getMempoolTxids() {
 	// no caching, that would be dumb
 	return rpcApi.getMempoolTxids();
@@ -467,7 +479,7 @@ function getMempoolDetails(start, count) {
 }
 
 function getBlockByHeight(blockHeight) {
-	return tryCacheThenRpcApi(blockCache, "getBlockByHeight-" + blockHeight, ONE_HR, function() {
+	return tryCacheThenRpcApi(blockCache, "getBlockByHeight-" + blockHeight, ONE_DAY, function() {
 		return rpcApi.getBlockByHeight(blockHeight);
 	});
 }
@@ -489,7 +501,7 @@ function getBlocksByHeight(blockHeights) {
 }
 
 function getBlockHeaderByHeight(blockHeight) {
-	return tryCacheThenRpcApi(blockCache, "getBlockHeaderByHeight-" + blockHeight, ONE_HR, function() {
+	return tryCacheThenRpcApi(blockCache, "getBlockHeaderByHeight-" + blockHeight, ONE_DAY, function() {
 		return rpcApi.getBlockHeaderByHeight(blockHeight);
 	});
 }
@@ -499,6 +511,34 @@ function getBlockHeadersByHeight(blockHeights) {
 		var promises = [];
 		for (var i = 0; i < blockHeights.length; i++) {
 			promises.push(getBlockHeaderByHeight(blockHeights[i]));
+		}
+
+		Promise.all(promises).then(function(results) {
+			resolve(results);
+
+		}).catch(function(err) {
+			reject(err);
+		});
+	});
+}
+
+function getBlockDiffByHeight(blockHeight) {
+
+	return blockCache.get("getBlockHeaderByHeight-" + blockHeight).then(function(result) {
+
+		if (result)
+			return {height: result.height, pow_algo: result.pow_algo, difficulty: result.difficulty};
+		else
+			return {};
+			
+	});
+}
+
+function getBlockDiffsByHeight(blockHeights) {
+	return new Promise(function(resolve, reject) {
+		var promises = [];
+		for (var i = 0; i < blockHeights.length; i++) {
+			promises.push(getBlockDiffByHeight(blockHeights[i]));
 		}
 
 		Promise.all(promises).then(function(results) {
@@ -527,7 +567,7 @@ function getBlocksStatsByHeight(blockHeights) {
 }
 
 function getBlockByHash(blockHash) {
-	return tryCacheThenRpcApi(blockCache, "getBlockByHash-" + blockHash, ONE_HR, function() {
+	return tryCacheThenRpcApi(blockCache, "getBlockByHash-" + blockHash, ONE_DAY, function() {
 		return rpcApi.getBlockByHash(blockHash);
 	});
 }
@@ -1007,5 +1047,10 @@ module.exports = {
 	getBlocksStatsByHeight: getBlocksStatsByHeight,
 	buildBlockAnalysisData: buildBlockAnalysisData,
 	getBlockHeaderByHeight: getBlockHeaderByHeight,
-	getBlockHeadersByHeight: getBlockHeadersByHeight
+	getBlockHeadersByHeight: getBlockHeadersByHeight,
+	getBlockDiffByHeight: getBlockDiffByHeight,
+	getBlockDiffsByHeight: getBlockDiffsByHeight,
+	getMasternodeStats: getMasternodeStats,
+	getMasternodeList: getMasternodeList
+
 };

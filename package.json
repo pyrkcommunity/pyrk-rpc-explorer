@@ -1,7 +1,7 @@
 {
-  "name": "btc-rpc-explorer",
+  "name": "pyrk-rpc-explorer",
   "version": "2.0.0",
-  "description": "Self-hosted Bitcoin blockchain explorer",
+  "description": "Self-hosted Pyrk blockchain explorer",
   "private": false,
   "bin": "bin/cli.js",
   "scripts": {
@@ -9,15 +9,14 @@
     "refresh-mining-pool-configs": "node ./bin/refresh-mining-pool-configs.js"
   },
   "keywords": [
-    "bitcoin",
-    "litecoin",
+    "pyrk",
     "blockchain"
   ],
   "author": "Dan Janosik <dan@47.io>",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/janoside/btc-rpc-explorer.git"
+    "url": "git+https://github.com/janoside/pyrk-rpc-explorer.git"
   },
   "dependencies": {
     "async": "^3.2.0",

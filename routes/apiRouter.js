@@ -23,6 +23,72 @@ var addressApi = require("./../app/api/addressApi.js");
 const forceCsrf = csurf({ ignoreMethods: [] });
 
 
+router.get("/getdifficulties", function(req, res, next) {
+
+	coreApi.getMiningInfo().then(function(result) {
+	
+		var formatResult = {
+			sha256d: result.difficulty_sha256d,
+			scrypt: result.difficulty_scrypt,
+			x11: result.difficulty_x11,
+		};
+	
+		res.json(formatResult);
+
+		next();
+	});
+
+});
+
+router.get("/getblockcount", function(req, res, next) {
+
+	coreApi.getMiningInfo().then(function(result) {
+		res.json(result.blocks);
+
+		next();
+	});
+
+});
+
+
+router.get("/getblockhash", function(req, res, next) {
+
+	var blockHeight = parseInt(req.query.index);
+
+	coreApi.getBlockHeaderByHeight(blockHeight).then(function(result) {
+		res.json(result.hash);
+
+		next();
+	});
+
+});
+
+router.get("/getblock", function(req, res, next) {
+
+	var blockHash = req.query.hash;
+	
+	coreApi.getBlockByHash(blockHash).then(function(result) {
+		res.json(result);
+
+		next();
+	});
+
+});
+
+router.get("/getmoneysupply", function(req, res, next) {
+
+	coreApi.getUtxoSetSummary().then(function(result) {
+		res.json(result.total_amount);
+
+		next();
+	});
+
+});
+
+
+
+
+
 
 
 
@@ -50,6 +116,21 @@ router.get("/block-headers-by-height/:blockHeights", function(req, res, next) {
 	}
 
 	coreApi.getBlockHeadersByHeight(blockHeights).then(function(result) {
+		res.json(result);
+
+		next();
+	});
+});
+
+router.get("/block-diff-by-height/:blockHeights", function(req, res, next) {
+	var blockHeightStrs = req.params.blockHeights.split(",");
+	
+	var blockHeights = [];
+	for (var i = 0; i < blockHeightStrs.length; i++) {
+		blockHeights.push(parseInt(blockHeightStrs[i]));
+	}
+
+	coreApi.getBlockDiffsByHeight(blockHeights).then(function(result) {
 		res.json(result);
 
 		next();

@@ -41,14 +41,52 @@ div.row.index-summary
 				tr
 					th.px-2.px-lg-0.px-xl-2
 						i.fas.fa-dumbbell.mr-1.summary-icon
-						span Difficulty
+						span Difficulty (SHA256)
 					td.text-right.text-monospace
-						- var difficultyData = utils.formatLargeNumber(getblockchaininfo.difficulty, 2);
-						span.border-dotted(data-toggle="tooltip", title=parseFloat(getblockchaininfo.difficulty).toLocaleString())
+						- var difficultyData = utils.formatLargeNumber(getblockchaininfo.difficulties.sha256d, 2);
+						span.border-dotted(data-toggle="tooltip", title=parseFloat(getblockchaininfo.difficulties.sha256d).toLocaleString())
 							span #{difficultyData[0]}
 							small.px-2.px-lg-0.px-xl-2 x
 							span 10
 							sup #{difficultyData[1].exponent}
+
+				tr
+					th.px-2.px-lg-0.px-xl-2
+						i.fas.fa-dumbbell.mr-1.summary-icon
+						span Difficulty (Scrypt)
+					td.text-right.text-monospace
+						- var difficultyData = utils.formatLargeNumber(getblockchaininfo.difficulties.scrypt, 2);
+						span.border-dotted(data-toggle="tooltip", title=parseFloat(getblockchaininfo.difficulties.scrypt).toLocaleString())
+							span #{difficultyData[0]}
+							small.px-2.px-lg-0.px-xl-2 x
+							span 10
+							sup #{difficultyData[1].exponent}
+							
+				tr
+					th.px-2.px-lg-0.px-xl-2
+						i.fas.fa-dumbbell.mr-1.summary-icon
+						span Difficulty (X11)
+					td.text-right.text-monospace
+						- var difficultyData = utils.formatLargeNumber(getblockchaininfo.difficulties.x11, 2);
+						span.border-dotted(data-toggle="tooltip", title=parseFloat(getblockchaininfo.difficulties.x11).toLocaleString())
+							span #{difficultyData[0]}
+							small.px-2.px-lg-0.px-xl-2 x
+							span 10
+							sup #{difficultyData[1].exponent}
+
+				tr
+					th.px-2.px-lg-0.px-xl-2
+						i.fas.fa-clock.mr-1.summary-icon
+						span.border-dotted(title=`Average block time for the last 100 blocks.`, data-toggle="tooltip") Avg Block Time
+					td.text-right.text-monospace
+						- var firstBlockHeader = difficultyPeriodFirstBlockHeader;
+						- var currentBlock = latestBlocks[0];
+						- var heightDiff = currentBlock.height - firstBlockHeader.height;
+						- var timeDiff = currentBlock.mediantime - firstBlockHeader.mediantime;
+						- var timePerBlock = timeDiff / heightDiff;
+						- var timePerBlockDuration = moment.duration(timePerBlock * 1000);
+
+						span #{timePerBlockDuration.format()}
 
 				tr
 					th.px-2.px-lg-0.px-xl-2
@@ -63,47 +101,6 @@ div.row.index-summary
 
 						span(class=colorClass) #{mempoolInfo.size.toLocaleString()}
 
-				tr
-					th.px-2.px-lg-0.px-xl-2
-						i.fas.fa-bullseye.mr-1.summary-icon
-						span.border-dotted(title="Current fee estimates (using 'estimatesmartfee') for getting a transaction included in 1 block, 6 blocks (1 hr), 144 blocks (1 day), or 1,008 blocks (1 week).", data-toggle="tooltip") Fee Targets
-						if (false)
-							small.ml-1 (1/h/d/w)
-					td.text-right.text-monospace #{smartFeeEstimates[1]}
-						small.d-md-none  
-						small.text-muted /
-						span #{smartFeeEstimates[6]}
-						small.text-muted /
-						span #{smartFeeEstimates[144]}
-						small.text-muted /
-						span #{smartFeeEstimates[1008]}
-						small  sat/vB
-
-				tr
-					th.px-2.px-lg-0.px-xl-2
-						i.fas.fa-clock.mr-1.summary-icon
-						span.border-dotted(title=`Average block time for blocks in the current difficulty epoch (#${difficultyPeriod}). The difference between the target (${coinConfig.targetBlockTimeMinutes}min) and this time indicates how the difficulty will adjust for the next epoch.`, data-toggle="tooltip") Block Time
-						small.ml-1 (e#{difficultyPeriod.toLocaleString()})
-					td.text-right.text-monospace
-						- var firstBlockHeader = difficultyPeriodFirstBlockHeader;
-						- var currentBlock = latestBlocks[0];
-						- var heightDiff = currentBlock.height - firstBlockHeader.height;
-						- var timeDiff = currentBlock.mediantime - firstBlockHeader.mediantime;
-						- var timePerBlock = timeDiff / heightDiff;
-						- var timePerBlockDuration = moment.duration(timePerBlock * 1000);
-
-						if (timePerBlock > 600)
-							- var diffAdjPercent = new Decimal(timeDiff / heightDiff / 600).times(100).minus(100);
-							- var diffAdjText = `Prediction for next difficulty adjustment (in ${blocksUntilDifficultyAdjustment} block${blocksUntilDifficultyAdjustment == 1 ? "" : "s"}): -${diffAdjPercent.toDP(1)}%`;
-							- var diffAdjSign = "-";
-						else
-							- var diffAdjPercent = new Decimal(100).minus(new Decimal(timeDiff / heightDiff / 600).times(100));
-							- var diffAdjText = `Prediction for next difficulty adjustment (in ${blocksUntilDifficultyAdjustment} block${blocksUntilDifficultyAdjustment == 1 ? "" : "s"}): +${diffAdjPercent.toDP(1)}%`;
-							- var diffAdjSign = "+";
-
-						span.border-dotted(title=diffAdjText, data-toggle="tooltip") #{timePerBlockDuration.format()}
-							small.text-muted.ml-1 (#{diffAdjSign}#{diffAdjPercent.toDP(1)}%)
-								
 
 	div(class=colClass)
 		h5.h6 Blockchain
@@ -182,6 +179,19 @@ div.row.index-summary
 							else
 								small.text-muted.border-dotted(title=utxoCalculatingDesc, data-toggle="tooltip") calculating...
 
+				tr
+					th.px-2.px-lg-0.px-xl-2
+						i.fas.fa-bullseye.mr-1.summary-icon
+						span.border-dotted(title="Current fee estimates (using 'estimatesmartfee') for getting a transaction included in 1 block or 10 blocks (15 min).", data-toggle="tooltip") Fee Targets
+						if (false)
+							small.ml-1 (1/h/d/w)
+					td.text-right.text-monospace #{smartFeeEstimates[1]}
+						small.d-md-none  
+						small.text-muted /
+						span #{smartFeeEstimates[10]}
+						small  sat/vB
+
+
 	if (networkVolume || exchangeRates)
 		div(class=colClass)
 			h5.h6 Financials
@@ -243,4 +253,23 @@ div.row.index-summary
 								- var currencyValue = parseInt(networkVolume.d1.amt);
 								- var currencyValueDecimals = 0;
 								include ./value-display.pug
-									
+			
+			span &nbsp;		
+			h5.h6 Masternodes
+
+			table.table.table-borderless.table-sm.table-hover.mb-lg-0
+				tbody
+					if (masterNodeCounts)
+						tr
+							th.px-2.px-lg-0.px-xl-2
+								i.fas.fa-server.mr-1.summary-icon
+								span Total Masternodes
+							td.text-right.text-monospace
+								span #{masterNodeCounts.total}
+								
+						tr
+							th.px-2.px-lg-0.px-xl-2
+								i.fas.fa-clipboard-check.mr-1.summary-icon
+								span Online Masternodes
+							td.text-right.text-monospace
+								span #{masterNodeCounts.enabled}

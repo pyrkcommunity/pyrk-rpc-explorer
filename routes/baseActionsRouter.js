@@ -56,7 +56,7 @@ router.get("/", function(req, res, next) {
 	res.locals.offset = 0;
 	res.locals.sort = "desc";
 
-	var feeConfTargets = [1, 6, 144, 1008];
+	var feeConfTargets = [1, 10];
 	res.locals.feeConfTargets = feeConfTargets;
 
 
@@ -98,12 +98,18 @@ router.get("/", function(req, res, next) {
 		promises.push(coreApi.getBlocksStatsByHeight(blockHeights));
 
 		// promiseResults[6]
+		//promises.push(new Promise(function(resolve, reject) {
+		//	coreApi.getBlockHeaderByHeight(coinConfig.difficultyAdjustmentBlockCount * res.locals.difficultyPeriod).then(function(difficultyPeriodFirstBlockHeader) {
+		//		resolve(difficultyPeriodFirstBlockHeader);
+		//	});
+		//}));
+
 		promises.push(new Promise(function(resolve, reject) {
-			coreApi.getBlockHeaderByHeight(coinConfig.difficultyAdjustmentBlockCount * res.locals.difficultyPeriod).then(function(difficultyPeriodFirstBlockHeader) {
+			coreApi.getBlockHeaderByHeight(getblockchaininfo.blocks - 100).then(function(difficultyPeriodFirstBlockHeader) {
 				resolve(difficultyPeriodFirstBlockHeader);
 			});
 		}));
-
+		
 		if (getblockchaininfo.chain !== 'regtest') {
 			var targetBlocksPerDay = 24 * 60 * 60 / global.coinConfig.targetBlockTimeSeconds;
 
@@ -142,7 +148,7 @@ router.get("/", function(req, res, next) {
 				for (var i = 0; i < feeConfTargets.length; i++) {
 					var rawSmartFeeEstimate = rawSmartFeeEstimates[i];
 
-					if (rawSmartFeeEstimate.errors) {
+					if (rawSmartFeeEstimate.errors || rawSmartFeeEstimate.feerate == -1) {
 						smartFeeEstimates[feeConfTargets[i]] = "?";
 
 					} else {
@@ -386,6 +392,89 @@ router.get("/changeSetting", function(req, res, next) {
 	res.redirect(req.headers.referer);
 });
 
+router.get("/masternode-list", function(req, res, next) {
+	var limit = config.site.browseBlocksPageSize;
+	var offset = 0;
+	var sort = "desc";
+	var query = '';
+
+	if (req.query.limit) {
+		limit = parseInt(req.query.limit);
+	}
+
+	if (req.query.offset) {
+		offset = parseInt(req.query.offset);
+	}
+
+	if (req.query.filter) {
+		query = req.query.filter.replace(/[^A-Za-z0-9\.\:]/g,'');;
+	}
+
+	res.locals.limit = limit;
+	res.locals.offset = offset;
+	res.locals.filter = query;
+	res.locals.paginationBaseUrl = "/masternode-list";
+
+	coreApi.getMasternodeList().then((masternodelist) => {
+
+		res.locals.nodeOffset = offset;
+
+		var fulllist = [];
+		var mnkeys = Object.keys(masternodelist);
+
+		for (let i = 0; i < mnkeys.length; i++)
+		{
+		
+			if (query && query != '')
+			{
+				
+				var checkip = masternodelist[mnkeys[i]].address;
+				var checkaddr = masternodelist[mnkeys[i]].payee;
+
+				if (checkip.includes(query) || checkaddr.includes(query))
+				{
+					fulllist.push(masternodelist[mnkeys[i]]);
+				}
+			
+			}
+			else
+			{
+				fulllist.push(masternodelist[mnkeys[i]]);
+			}
+			
+		}
+		
+		res.locals.nodeCount = fulllist.length;
+
+		var subsetmn = fulllist.slice(offset, offset + limit);
+		
+		var mnlist = [];
+		
+		for (let i = 0; i < subsetmn.length; i++)
+		{
+		
+			var nodeinfo = subsetmn[i];
+			
+			mnlist.push(nodeinfo);
+		
+		}
+
+		res.locals.mnlist = mnlist;
+
+		res.render("masternode-list");
+
+		next();
+
+	}).catch(function(err) {
+		res.locals.userMessage = "Error: " + err;
+
+		res.render("masternode-list");
+
+		next();
+	});
+	
+})
+
 router.get("/blocks", function(req, res, next) {
 	var limit = config.site.browseBlocksPageSize;
 	var offset = 0;
@@ -504,6 +593,12 @@ router.get("/block-stats", function(req, res, next) {
 
 		next();
 	});
+});
+
+router.get("/restapi", function(req, res, next) {
+	res.render("restapi");
+
+	next();
 });
 
 router.get("/search", function(req, res, next) {

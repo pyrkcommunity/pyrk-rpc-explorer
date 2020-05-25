@@ -208,7 +208,7 @@ function onRpcConnectionVerified(getnetworkinfo, getblockchaininfo) {
 
 	global.getnetworkinfo = getnetworkinfo;
 
-	var bitcoinCoreVersionRegex = /^.*\/Satoshi\:(.*)\/.*$/;
+	var bitcoinCoreVersionRegex = /^.*\/Pyrk\:(.*)\/.*$/;
 
 	var match = bitcoinCoreVersionRegex.exec(getnetworkinfo.subversion);
 	if (match) {
@@ -271,6 +271,22 @@ function onRpcConnectionVerified(getnetworkinfo, getblockchaininfo) {
 	// 1d / 7d volume
 	refreshNetworkVolumes();
 	setInterval(refreshNetworkVolumes, 30 * 60 * 1000);
+	
+	// Masternode Stats
+	refreshMasternodeStats();
+	setInterval(refreshMasternodeStats, 15 * 60 * 1000);
+	
+}
+
+function refreshMasternodeStats() {
+
+	coreApi.getMasternodeStats().then((stats) => {
+		global.masterNodeCounts = stats;
+		
+		debugLog("Refreshed masternode stats: " + JSON.stringify(stats));
+
+	});
+
 }
 
 function refreshUtxoSetSummary() {
@@ -302,7 +318,7 @@ function refreshNetworkVolumes() {
 	coreApi.getBlockchainInfo().then(function(result) {
 		var promises = [];
 
-		var blocksPerDay = 144 + 20; // 20 block padding
+		var blocksPerDay = 960 + 20; // 20 block padding
 
 		for (var i = 0; i < (blocksPerDay * 1); i++) {
 			promises.push(coreApi.getBlockStatsByHeight(result.blocks - i));
@@ -496,6 +512,8 @@ app.use(function(req, res, next) {
 	res.locals.utxoSetSummaryPending = global.utxoSetSummaryPending;
 	res.locals.networkVolume = global.networkVolume;
 	
+	res.locals.masterNodeCounts = global.masterNodeCounts; 
+
 	res.locals.host = req.session.host;
 	res.locals.port = req.session.port;
 
@@ -596,6 +614,7 @@ app.use(csurf(), (req, res, next) => {
 
 app.use('/', baseActionsRouter);
 app.use('/api/', apiActionsRouter);
+app.use('/ext/', apiActionsRouter);
 app.use('/snippet/', snippetActionsRouter);
 
 app.use(function(req, res, next) {

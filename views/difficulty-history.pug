@@ -13,11 +13,10 @@ block content
 			hr
 
 			ul.mb-0
-				li Mining difficulty adjusts automatically every #{coinConfig.difficultyAdjustmentBlockCount.toLocaleString()} blocks.
+				li Mining difficulty adjusts automatically every block for each algorithm.
 				li The adjustment aims to maintain an average block-mining time of #{coinConfig.targetBlockTimeMinutes} minutes.
 				li A growth in the difficulty indicates that the average block-mining time during the previous adjustment epoch was less than #{coinConfig.targetBlockTimeMinutes} minutes (due to more miners joining the network and 'searching' / 'mining' for blocks).
 				li A drop in difficulty indicates miners have left the network so finding each block is adjusted to be 'easier' for the smaller number remaining.
-				li The difficulty 'value' is a multiple of the difficulty of finding the easiest block (Block #0) - e.g. blocks in BTC mainnet epoch 308 are over 16 trillion times harder to mine than those in epoch 0. 
 
 	div#progress-wrapper.mb-huge
 		div.card.shadow-sm.mb-3
@@ -33,21 +32,29 @@ block content
 			div.col
 				div.card.shadow-sm.mb-3
 					div.card-body
-						h3.h6.mb-0 Difficulty History
+						h3.h6.mb-0 Difficulty History Sha256
 						hr
 
-						canvas(id="graph-diff-hist")
+						canvas(id="graph-diff-hist-sha")
 
 		div.row
 			div.col
 				div.card.shadow-sm.mb-3
 					div.card-body
-						h3.h6.mb-0 Difficulty Change (clamped to ±100%)
+						h3.h6.mb-0 Difficulty History Scrypt
 						hr
 
-						canvas(id="graph-diff-change")
+						canvas(id="graph-diff-hist-scrypt")
 	
+		div.row
+			div.col
+				div.card.shadow-sm.mb-3
+					div.card-body
+						h3.h6.mb-0 Difficulty History X11
+						hr
 
+						canvas(id="graph-diff-hist-x")
+	
 
 block endOfBody
 	script(src="/js/chart.bundle.min.js", integrity="sha384-qgOtiGNaHh9fVWUnRjyHlV39rfbDcvPPkEzL1RHvsHKbuqUqM6uybNuVnghY2z4/")
@@ -63,26 +70,33 @@ block endOfBody
 		}
 
 		$(document).ready(function() {
-			loadData(heights, 1, heights.length);
+			loadData(heights, 100, heights.length);
 		});
 
 		function loadData(heightChunks, chunkSize, count) {
 			var chunkStrs = [];
 			
+			var tempChunks = [];
+			
+			var j = 0;
+			
 			for (var i = 0; i < heightChunks.length; i++) {
+			
 				var heightChunk = heightChunks[i];
 
-				var chunkStr = "";
-
-				for (var j = 0; j < heightChunk.length; j++) {
-					if (j > 0) {
-						chunkStr += ",";
-					}
-
-					chunkStr += heightChunk[j];
+				tempChunks.push(heightChunk);
+				
+				j++;
+				
+				if (j > 100)
+				{
+				
+					j = 0;
+					chunkStrs.push(tempChunks.join());
+					tempChunks = [];
+				
 				}
 
-				chunkStrs.push(chunkStr);
 			}
 
 			//alert(JSON.stringify(chunks));
@@ -99,13 +113,17 @@ block endOfBody
 			};
 
 			var finishedCallback = function() {
-				var summary = summarizeData(results);
+				var summary = summarizeData(results, 'sha256d');
 
-				createGraph("graph-diff-hist", [summary.graphData], "Difficulty");
+				createGraph("graph-diff-hist-sha", [summary.graphData], "Difficulty");
 
-				createGraph("graph-diff-change", [summary.changeGraphData], "Difficulty Change %");
+				var summary = summarizeData(results, 'scrypt');
 
-				//createGraph("graph-diff-hist-2", summary.epochChunks, "Difficulty 2");
+				createGraph("graph-diff-hist-scrypt", [summary.graphData], "Difficulty");
+				
+				var summary = summarizeData(results, 'x11');
+
+				createGraph("graph-diff-hist-x", [summary.graphData], "Difficulty");
 				
 				$("#main-content").show();
 				$("#progress-wrapper").hide();
@@ -165,7 +183,7 @@ block endOfBody
 				return;
 			}
 
-			var url = `/api/block-headers-by-height/${chunks[chunkIndex]}`;
+			var url = `/api/block-diff-by-height/${chunks[chunkIndex]}`;
 			
 			//console.log(url);
 
@@ -183,61 +201,22 @@ block endOfBody
 			});
 		}
 
-		function summarizeData(raw) {
+		function summarizeData(raw, algo) {
 			var summary = {};
 			summary.graphData = [];
 			summary.changeGraphData = [];
 
 			for (var i = 0; i < raw.length; i++) {
-				summary.graphData.push({x:i, y:raw[i].difficulty});
+			
+			
+				if (raw[i].pow_algo == algo)
+				{
+			
+					summary.graphData.push({x:i, y:raw[i].difficulty});
 
-				if (i == 0) {
-					summary.changeGraphData.push({x:i, y:raw[i].difficulty});
-
-				} else {
-					var d1 = raw[i].difficulty;
-					var d0 = raw[i - 1].difficulty
-
-					var deltaPercent = 100 * (d1 / d0 - 1);
-					/*if (d1 > d0) {
-						// increase
-						deltaPercent = 
-						
-
-					} else {
-						// decrease
-						deltaPercent = -100 * (1 - d1 / d0);
-						
-					}*/
-
-					if (deltaPercent > 100) {
-						deltaPercent = 100;
-					}
-
-					if (deltaPercent < -100) {
-						deltaPercent = -100;
-					}
-
-					summary.changeGraphData.push({x:i, y:deltaPercent});
 				}
-			}
-
-			/*
-			var epochChunkCount = 3;
-			var epochChunkSize = Math.floor(summary.graphData.length / epochChunkCount);
-
-			summary.epochChunks = [];
-			for (var i = 0; i < epochChunkCount; i++) {
-				summary.epochChunks.push([]);
-
-				var scale = summary.graphData[i * epochChunkSize].y;
 				
-				for (var j = 0; j < 100; j++) {
-					var data = summary.graphData[i * epochChunkSize + j];
-
-					summary.epochChunks[i].push({x:j, y:(data.y / scale)});
-				}
-			}*/
+			}
 
 			return summary;
 		}

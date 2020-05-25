@@ -10,6 +10,7 @@ div.table-responsive
 					th.data-header.text-right
 						span.border-dotted(title="UTC timestamp of the block.", data-toggle="tooltip") Date
 
+				th.data-header.text-right Algorithm
 				th.data-header.text-right Age
 				th.data-header.text-right
 					span.border-dotted(title="Time To Mine - The time it took to mine this block after the previous block. 'Fast' blocks (mined in < 5min) are shown in green; 'slow' blocks (mined in > 15min) are shown in red.", data-toggle="tooltip") T.T.M.
@@ -69,7 +70,9 @@ div.table-responsive
 							td.data-cell.text-monospace.text-right
 								- var timestampHuman = block.time;
 								include timestamp-human.pug
-							
+
+						td.data-cell.text-monospace.text-right
+							span #{block.pow_algo}
 
 						td.data-cell.text-monospace.text-right
 							if (sort != "asc" && blockIndex == 0 && offset == 0 && timeAgoTime > (15 * 60 * 1000))
@@ -123,7 +126,7 @@ div.table-responsive
 									span 0
 
 						td.data-cell.text-monospace.text-right
-							- var currencyValue = new Decimal(block.totalFees).dividedBy(block.strippedsize).times(coinConfig.baseCurrencyUnit.multiplier).toDecimalPlaces(1);
+							- var currencyValue = new Decimal(block.totalFees).dividedBy(block.size).times(coinConfig.baseCurrencyUnit.multiplier).toDecimalPlaces(1);
 							span #{currencyValue}
 							
 							// idea: show typical tx fee, maybe also optimized fee if not segwit
@@ -133,7 +136,7 @@ div.table-responsive
 
 						td.data-cell.text-monospace.text-right
 							- var currencyValue = new Decimal(block.totalFees);
-							- var currencyValueDecimals = 3;
+							- var currencyValueDecimals = 6;
 							include ./value-display.pug
 
 							

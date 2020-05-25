@@ -1,0 +1,45 @@
+extends layout
+
+block headContent
+	title Rest API
+
+block content
+	h1.h3 Rest API
+	hr
+
+	div.card.shadow-sm.mb-huge
+		div.card-body
+		
+			p For legacy purposes you may also use /ext instead of /api in the URL
+
+			ul
+				li 
+					p 
+						| <strong>getdifficulties</strong> <br />
+						| <i>Returns the current difficulty</i> <br />
+						| <a href="https://explore.pyrk.org/api/getdifficulties">https://explore.pyrk.org/api/getdifficulties</a>
+						
+				li 
+					p 
+						| <strong>getblockcount</strong> <br />
+						| <i>Returns the current block index</i> <br />
+						| <a href="https://explore.pyrk.org/api/getblockcount">https://explore.pyrk.org/api/getblockcount</a>
+						
+				li 
+					p 
+						| <strong>getblockhash [index]</strong> <br />
+						| <i>Returns the hash of the block at ; index 0 is the genesis block.</i> <br />
+						| <a href="https://explore.pyrk.org/api/getblockhash?index=1337">https://explore.pyrk.org/api/getblockhash?index=1337</a>
+						
+				li 
+					p 
+						| <strong>getblock [hash]</strong> <br />
+						| <i>Returns information about the block with the given hash.</i> <br />
+						| <a href="https://explore.pyrk.org/api/getblock?hash=a036fc83eed131aba7273b084edc5a8a65fd7b75fa7624945ac4d8e6fd571e0f">https://explore.pyrk.org/api/getblock?hash=a036fc83eed131aba7273b084edc5a8a65fd7b75fa7624945ac4d8e6fd571e0f</a>
+
+				li 
+					p 
+						| <strong>getmoneysupply</strong> <br />
+						| <i>Returns current money supply</i> <br />
+						| <a href="https://explore.pyrk.org/api/getmoneysupply">https://explore.pyrk.org/api/getmoneysupply</a>
+						

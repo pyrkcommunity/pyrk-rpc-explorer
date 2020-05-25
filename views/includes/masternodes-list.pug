@@ -1,0 +1,47 @@
+div.table-responsive
+	table.table.table-striped.mb-0
+		thead
+			tr
+				th.data-header.text-left Address
+				th.data-header.text-right Status
+				th.data-header.text-right Last Seen
+				th.data-header.text-right Last Paid
+				th.data-header.text-right Time Active
+				th.data-header.text-right IP
+				th.data-header.text-right Protocol
+				th.data-header.text-right Version
+				th.data-header.text-right Sentinel
+
+		tbody
+
+			each mninfo, mnindex in mnlist
+				tr
+					td
+						a(href=("/address/" + mninfo.payee)) #{mninfo.payee}
+						
+					td.data-cell.text-monospace.text-right
+						span #{mninfo.status}
+			
+					td.data-cell.text-monospace.text-right
+						- var timestampHuman = parseInt(mninfo.lastseen);
+						include timestamp-human2.pug
+
+					td.data-cell.text-monospace.text-right
+						- var timestampHuman = parseInt(mninfo.lastpaidtime);
+						include timestamp-human2.pug
+						
+					td.data-cell.text-monospace.text-right
+						- var activeTime = moment.duration(mninfo.activeseconds, 'seconds').humanize()
+						span #{activeTime}
+
+					td.data-cell.text-monospace.text-right
+						span #{mninfo.address}
+						
+					td.data-cell.text-monospace.text-right
+						span #{mninfo.protocol}
+						
+					td.data-cell.text-monospace.text-right
+						span #{mninfo.daemonversion}
+
+					td.data-cell.text-monospace.text-right
+						span #{mninfo.sentinelversion} (#{mninfo.sentinelstate})

@@ -5,7 +5,7 @@ var url = require('url');
 var coins = require("./coins.js");
 var credentials = require("./credentials.js");
 
-var currentCoin = process.env.BTCEXP_COIN || "BTC";
+var currentCoin = process.env.BTCEXP_COIN || "PYRK";
 
 var rpcCred = credentials.rpc;
 
@@ -21,7 +21,7 @@ if (rpcCred.cookie && !rpcCred.username && !rpcCred.password && fs.existsSync(rp
 
 var cookieSecret = process.env.BTCEXP_COOKIE_SECRET
  || (rpcCred.password && crypto.createHmac('sha256', JSON.stringify(rpcCred))
-                               .update('btc-rpc-explorer-cookie-secret').digest('hex'))
+                               .update('pyrk-rpc-explorer-cookie-secret').digest('hex'))
  || "0x000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f";
 
 
@@ -157,17 +157,17 @@ module.exports = {
 				{
 					title:"Related Sites",
 					links:[
-						{name: "Bitcoin Explorer", url:"https://explorer.btc21.org", imgUrl:"/img/logo/btc.svg"},
-						{name: "Testnet Explorer", url:"https://testnet.btc21.org", imgUrl:"/img/logo/tbtc.svg"},
-						{name: "LND Admin", url:"https://lnd-admin.chaintools.io", imgUrl:"/img/logo/lnd-admin.png"},
-						//{name: "Litecoin Explorer", url:"https://ltc.chaintools.io", imgUrl:"/img/logo/ltc.svg"},
-						//{name: "Lightning Explorer", url:"https://lightning.chaintools.io", imgUrl:"/img/logo/lightning.svg"},
+						{name: "Pyrk Homepage", url:"https://www.pyrk.org", imgUrl:"/img/logo/pyrk.png"},
+						{name: "Pyrk Pool", url:"https://pool.pyrk.org", imgUrl:"/img/logo/pyrk.png"},
+						{name: "Pyrk Forum", url:"https://lnd-admin.chaintools.io", imgUrl:"/img/logo/pyrk.png"},
+						{name: "Pyrk Telegram", url:"https://t.me/pyrkcommunity", imgUrl:"/img/logo/web-telegram-logo.png "},
+						{name: "Pyrk Discord", url:"https://discord.gg/zg8zUQp", imgUrl:"/img/logo/discord.png"},
 					]
 				}
 			]
 		},
-		subHeaderToolsList:[0, 10, 9, 4, 11, 6, 7], // indexes in "siteTools" below that are shown in the site "sub menu" (visible on all pages except homepage)
-		prioritizedToolIdsList: [0, 10, 11, 9, 3, 4, 12, 2, 5, 1, 6, 7, 8],
+		subHeaderToolsList:[0, 11, 10, 4, 12, 7, 8, 14], // indexes in "siteTools" below that are shown in the site "sub menu" (visible on all pages except homepage)
+		prioritizedToolIdsList: [0, 14, 11, 12, 10, 3, 4, 12, 13 ,2, 5, 1, 6, 7, 8, 9],
 	},
 
 	credentials: credentials,
@@ -179,30 +179,22 @@ module.exports = {
 	/* 2 */		{name:"Browse Blocks", url:"/blocks", desc:"Browse all blocks in the blockchain.", fontawesome:"fas fa-cubes"},
 	/* 3 */		{name:"Transaction Stats", url:"/tx-stats", desc:"See graphs of total transaction volume and transaction rates.", fontawesome:"fas fa-chart-bar"},
 
-	/* 4 */		{name:"Mempool Summary", url:"/mempool-summary", desc:"Detailed summary of the current mempool for this node.", fontawesome:"fas fa-receipt"},
-	/* 5 */		{name:"Browse Pending Tx", url:"/unconfirmed-tx", desc:"Browse unconfirmed/pending transactions.", fontawesome:"fas fa-unlock"},
+	/* 4 */		{name:"Masternode List", url:"/masternode-list", desc:"See list of all masternodes on the network.", fontawesome:"fas fa-server"},
 
-	/* 6 */		{name:"RPC Browser", url:"/rpc-browser", desc:"Browse the RPC functionality of this node. See docs and execute commands.", fontawesome:"fas fa-book"},
-	/* 7 */		{name:"RPC Terminal", url:"/rpc-terminal", desc:"Directly execute RPCs against this node.", fontawesome:"fas fa-terminal"},
+	/* 5 */		{name:"Mempool Summary", url:"/mempool-summary", desc:"Detailed summary of the current mempool for this node.", fontawesome:"fas fa-receipt"},
+	/* 6 */		{name:"Browse Pending Tx", url:"/unconfirmed-tx", desc:"Browse unconfirmed/pending transactions.", fontawesome:"fas fa-unlock"},
 
-	/* 8 */		{name:(coins[currentCoin].name + " Fun"), url:"/fun", desc:"See fun/interesting historical blockchain data.", fontawesome:"fas fa-certificate"},
+	/* 7 */		{name:"RPC Browser", url:"/rpc-browser", desc:"Browse the RPC functionality of this node. See docs and execute commands.", fontawesome:"fas fa-book"},
+	/* 8 */		{name:"RPC Terminal", url:"/rpc-terminal", desc:"Directly execute RPCs against this node.", fontawesome:"fas fa-terminal"},
 
-	/* 9 */		{name:"Mining Summary", url:"/mining-summary", desc:"Summary of recent data about miners.", fontawesome:"fas fa-chart-pie"},
-	/* 10 */	{name:"Block Stats", url:"/block-stats", desc:"Summary data for blocks in configurable range.", fontawesome:"fas fa-layer-group"},
-	/* 11 */	{name:"Block Analysis", url:"/block-analysis", desc:"Summary analysis for all transactions in a block.", fontawesome:"fas fa-angle-double-down"},
-	/* 12 */	{name:"Difficulty History", url:"/difficulty-history", desc:"Graph of difficulty changes over time.", fontawesome:"fas fa-chart-line"},
+	/* 9 */		{name:(coins[currentCoin].name + " Fun"), url:"/fun", desc:"See fun/interesting historical blockchain data.", fontawesome:"fas fa-certificate"},
+
+	/* 10 */	{name:"Mining Summary", url:"/mining-summary", desc:"Summary of recent data about miners.", fontawesome:"fas fa-chart-pie"},
+	/* 11 */	{name:"Block Stats", url:"/block-stats", desc:"Summary data for blocks in configurable range.", fontawesome:"fas fa-layer-group"},
+	/* 12 */	{name:"Block Analysis", url:"/block-analysis", desc:"Summary analysis for all transactions in a block.", fontawesome:"fas fa-angle-double-down"},
+	/* 13 */	{name:"Difficulty History", url:"/difficulty-history", desc:"Graph of difficulty changes over time.", fontawesome:"fas fa-chart-line"},
+	/* 14 */	{name:"API", url:"/restapi", desc:"Get information about PYRK from our API.", fontawesome:"fas fa-project-diagram"},
+
 	],
 
-	donations:{
-		addresses:{
-			coins:["BTC"],
-			sites:{"BTC":"https://explorer.btc21.org"}
-		},
-		btcpayserver:{
-			host:"https://donate.btc21.org",
-			storeId:"26k74KRh7RYmJcMDqvmdKTb2h3991FMTZSM4GJHnX6st",
-			notifyEmail:"chaintools.io@gmail.com",
-			customAmountUrl: "https://donate.btc21.org/apps/2TBP2GuQnYXGBiHQkmf4jNuMh6eN/pos"
-		}
-	}
 };

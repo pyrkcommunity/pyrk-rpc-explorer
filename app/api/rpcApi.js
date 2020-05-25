@@ -50,6 +50,14 @@ function getMiningInfo() {
 	return getRpcData("getmininginfo");
 }
 
+function getMasternodeStats() {
+	return getRpcDataWithParams({method:"masternode", parameters:["count"]})
+}
+
+function getMasternodeList() {
+	return getRpcDataWithParams({method:"masternode", parameters:["list"]})
+}
+
 function getUptimeSeconds() {
 	return getRpcData("uptime");
 }
@@ -63,7 +71,8 @@ function getMempoolTxids() {
 }
 
 function getSmartFeeEstimate(mode="CONSERVATIVE", confTargetBlockCount) {
-	return getRpcDataWithParams({method:"estimatesmartfee", parameters:[confTargetBlockCount, mode]});
+	//return getRpcDataWithParams({method:"estimatesmartfee", parameters:[confTargetBlockCount, mode]});
+	return getRpcDataWithParams({method:"estimatesmartfee", parameters:[confTargetBlockCount]});
 }
 
 function getNetworkHashrate(blockCount=144) {
@@ -502,6 +511,8 @@ module.exports = {
 	getBlockStatsByHeight: getBlockStatsByHeight,
 	getBlockHeaderByHash: getBlockHeaderByHash,
 	getBlockHeaderByHeight: getBlockHeaderByHeight,
+	getMasternodeStats: getMasternodeStats,
+	getMasternodeList: getMasternodeList,
 
 	minRpcVersions: minRpcVersions
 };

@@ -24,7 +24,7 @@ html(lang="en")
 		include includes/debug-overrides.pug
 
 		block headContent
-			title Explorer
+			title Pyrk Explorer
 		
 	body.bg-dark
 		nav.navbar.navbar-expand-lg.navbar-dark.bg-dark
@@ -34,12 +34,12 @@ html(lang="en")
 						if (coinConfig.logoUrlsByNetwork && coinConfig.logoUrlsByNetwork[activeBlockchain])
 							img.header-image(src=coinConfig.logoUrlsByNetwork[activeBlockchain], alt="logo")
 						else
-							img.header-image(src="/img/logo/btc.svg", alt="logo")
+							img.header-image(src="/img/logo/pyrk.png", alt="logo", style="background-color:#fff; border-radius:15px;")
 
 						if (coinConfig.siteTitlesByNetwork && coinConfig.siteTitlesByNetwork[activeBlockchain])
 							span #{coinConfig.siteTitlesByNetwork[activeBlockchain]}
 						else
-							span Bitcoin Explorer
+							span Pyrk Explorer
 						
 				button.navbar-toggler.navbar-toggler-right(type="button", data-toggle="collapse", data-target="#navbarNav", aria-label="collapse navigation")
 					span.navbar-toggler-icon
@@ -171,62 +171,16 @@ html(lang="en")
 						dl
 							dt Source
 							dd
-								a(href="https://github.com/janoside/btc-rpc-explorer") github.com/janoside/btc-rpc-explorer
-								
-								if (global.sourcecodeProjectMetadata)
-									div.mt-2
-										a.btn.btn-primary.btn-sm.mr-3.mb-1.text-decoration-none(href="https://github.com/janoside/btc-rpc-explorer")
-											i.fas.fa-star.mr-2
-											span.mr-2 Star 
-											span.badge.bg-white.text-dark #{global.sourcecodeProjectMetadata.stargazers_count}
-
-										a.btn.btn-primary.btn-sm.mr-3.mb-1.text-decoration-none(href="https://github.com/janoside/btc-rpc-explorer/fork")
-											i.fas.fa-code-branch.mr-2
-											span.mr-2 Fork 
-											span.badge.bg-white.text-dark #{global.sourcecodeProjectMetadata.forks_count}
-
-
+								a(href="https://github.com/pyrkcommunity/pyrk-rpc-explorer") github.com/pyrkcommunity/pyrk-rpc-explorer
 							
 							dt App Details
 							dd
 								span version: #{global.appVersion}
-								if (sourcecodeVersion)
-									br
-									span commit: 
-										a(href=("https://github.com/janoside/btc-rpc-explorer/commit/" + sourcecodeVersion)) #{sourcecodeVersion}
-								
-								br
-								span released: #{sourcecodeDate}
-								span(style="font-size: 0.9em;")  (
-									a(href="/changelog") changelog
-									span )
-
-							if (config.demoSite)
-								dt Public Demos
-								dd
-									if (coinConfig.demoSiteUrl)
-										a(href=coinConfig.demoSiteUrl) #{coinConfig.demoSiteUrl}
-									else
-										a(href="https://explorer.btc21.org") https://explorer.btc21.org
-									
-									div.mt-2
-										- var demoSites = [];
-										- demoSites.push({url:"https://explorer.btc21.org", logoUrl:"/img/logo/btc.svg", title:"Bitcoin Explorer"});
-										- demoSites.push({url:"https://testnet.btc21.org", logoUrl:"/img/logo/tbtc.svg", title:"Testnet Explorer"});
-
-										each demoSite in demoSites
-											a.mr-2(href=demoSite.url, title=demoSite.title)
-												img(src=demoSite.logoUrl, alt=demoSite.title)
-
-										a.mr-2(href="https://lnd-admin.chaintools.io", title="LND Admin")
-											img(src=("/img/logo/lnd-admin.png"), style="width: 32px; height: 32px;", alt="LND Admin")
 
 					div.col-md-7.text-md-right
 						dl
 							dd
-								button.btn.btn-primary(type="button", data-toggle="modal", data-target="#exampleModalCenter")
-									i.fas.fa-heart.mr-2
-									span Support Project
+								a(href="https://www.pyrk.org") Pyrk Homepage
 		
 		script(src="/js/jquery.min.js", integrity="sha384-vk5WoKIaW/vJyUAd9n/wmopsmNhiy+L2Z+SBxGYnUkunIxVxAv/UtMOhba/xskxh")
 		script(src="/js/popper.min.js", integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo")

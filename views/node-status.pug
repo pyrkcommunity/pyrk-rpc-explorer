@@ -85,10 +85,28 @@ block content
 									span.text-muted (headers: #{getblockchaininfo.headers.toLocaleString()})
 
 							div.row
-								div.summary-table-label Difficulty
+								div.summary-table-label Difficulty Sha256
 								div.summary-table-content.text-monospace
-									- var difficultyData = utils.formatLargeNumber(getblockchaininfo.difficulty, 3);
-									span(title=parseFloat(getblockchaininfo.difficulty).toLocaleString(), data-toggle="tooltip")
+									- var difficultyData = utils.formatLargeNumber(getblockchaininfo.difficulties.sha256d, 3);
+									span(title=parseFloat(getblockchaininfo.difficulties.sha256d).toLocaleString(), data-toggle="tooltip")
+										span #{difficultyData[0]}
+										span  x 10
+										sup #{difficultyData[1].exponent}
+
+							div.row
+								div.summary-table-label Difficulty Scrypt
+								div.summary-table-content.text-monospace
+									- var difficultyData = utils.formatLargeNumber(getblockchaininfo.difficulties.scrypt, 3);
+									span(title=parseFloat(getblockchaininfo.difficulties.scrypt).toLocaleString(), data-toggle="tooltip")
+										span #{difficultyData[0]}
+										span  x 10
+										sup #{difficultyData[1].exponent}
+
+							div.row
+								div.summary-table-label Difficulty X11
+								div.summary-table-content.text-monospace
+									- var difficultyData = utils.formatLargeNumber(getblockchaininfo.difficulties.x11, 3);
+									span(title=parseFloat(getblockchaininfo.difficulties.x11).toLocaleString(), data-toggle="tooltip")
 										span #{difficultyData[0]}
 										span  x 10
 										sup #{difficultyData[1].exponent}

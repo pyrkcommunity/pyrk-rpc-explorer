@@ -1,9 +1,7 @@
-var btc = require("./coins/btc.js");
-var ltc = require("./coins/ltc.js");
+var pyrk = require("./coins/pyrk.js");
 
 module.exports = {
-	"BTC": btc,
-	"LTC": ltc,
+	"PYRK": pyrk,
 
-	"coins":["BTC", "LTC"]
+	"coins":["PYRK"]
 };
