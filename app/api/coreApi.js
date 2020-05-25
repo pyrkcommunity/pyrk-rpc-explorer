@@ -266,13 +266,13 @@ function getNetworkHashrate(blockCount) {
 }
 
 function getBlockStats(hash) {
-	return tryCacheThenRpcApi(miscCache, "getBlockStats-" + hash, ONE_YR, function() {
+	return tryCacheThenRpcApi(miscCache, "getBlockStatsx-" + hash, ONE_HR, function() {
 		return rpcApi.getBlockStats(hash);
 	});
 }
 
 function getBlockStatsByHeight(height) {
-	return tryCacheThenRpcApi(miscCache, "getBlockStatsByHeight-" + height, ONE_YR, function() {
+	return tryCacheThenRpcApi(miscCache, "getBlockStatsByHeightx-" + height, ONE_HR, function() {
 		return rpcApi.getBlockStatsByHeight(height);
 	});
 }

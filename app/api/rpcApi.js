@@ -24,7 +24,7 @@ var rpcQueue = async.queue(function(task, callback) {
 
 }, config.rpcConcurrency);
 
-var minRpcVersions = {getblockstats:"0.17.0"};
+var minRpcVersions = {getblockstats:"0.12.0"}; //getblockstats:"0.17.0"};
 
 global.rpcStats = {};
 
