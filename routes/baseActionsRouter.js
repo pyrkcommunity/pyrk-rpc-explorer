@@ -1344,7 +1344,6 @@ router.get("/rpc-browser", function(req, res, next) {
 		res.send("RPC Terminal / Browser require authentication. Set an authentication password via the 'BTCEXP_BASIC_AUTH_PASSWORD' environment variable (see .env-sample file for more info).");
 
 		next();
-
 		return;
 	}
 

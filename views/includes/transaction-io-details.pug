@@ -215,14 +215,38 @@ div.row.text-monospace
 									else if (vout.scriptPubKey.asm && vout.scriptPubKey.asm.startsWith('OP_RETURN '))
 										div.mb-tiny
 											small.data-tag.bg-primary OP_RETURN
-										
+											if (tx.tokenData && tx.tokenData.tokenTransactionDetails[0] && tx.tokenData.tokenTransactionDetails[0].transactionDetails)
+												small  &nbsp; 
+												if (tx.tokenData.tokenTransactionDetails[0].valid == true)
+													small.data-tag.bg-success TOKEN TRANSACTION
+												else
+													small.data-tag.bg-warning TOKEN TRANSACTION
+													
 										div
-											small.font-weight-bold data
-											small (ascii) - 
-											small #{utils.hex2ascii(vout.scriptPubKey.asm.substring("OP_RETURN ".length))}
-											br
-											small
-												a(href="javascript:void(0)" onclick=`$('#op-return-hex-${tx.txid}-${vout.n}').show(); $(this).hide(); return false;`) show raw
+											if (tx.tokenData && tx.tokenData.tokenTransactionDetails[0] && tx.tokenData.tokenTransactionDetails[0].transactionDetails)
+												small.font-weight-bold Transaction Type: 
+												small #{tx.tokenData.tokenTransactionDetails[0].transactionDetails.transactionType}
+												br
+												small.font-weight-bold Token ID: 
+												small #{tx.tokenData.tokenTransactionDetails[0].transactionDetails.tokenIdHex}
+												br
+												small.font-weight-bold Token: 
+												small #{tx.tokenData.tokenTransactionDetails[0].transactionDetails.name} (#{tx.tokenData.tokenTransactionDetails[0].transactionDetails.symbol})
+												br
+												small.font-weight-bold Output Address: 
+												small #{tx.tokenData.tokenTransactionDetails[0].transactionDetails.sendOutput.address}
+												br
+												small.font-weight-bold Output Amount: 
+												small #{tx.tokenData.tokenTransactionDetails[0].transactionDetails.sendOutput.amount} #{tx.tokenData.tokenTransactionDetails[0].transactionDetails.symbol}
+
+													
+											else
+												small.font-weight-bold data
+												small (ascii) - 
+												small #{utils.hex2ascii(vout.scriptPubKey.asm.substring("OP_RETURN ".length))}
+												br
+												small
+													a(href="javascript:void(0)" onclick=`$('#op-return-hex-${tx.txid}-${vout.n}').show(); $(this).hide(); return false;`) show raw
 
 										div(id=`op-return-hex-${tx.txid}-${vout.n}`, style="display: none;")
 											small.font-weight-bold data

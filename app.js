@@ -25,6 +25,7 @@ var debugErrorLog = debug("btcexp:error");
 var debugPerfLog = debug("btcexp:actionPerformace");
 
 var express = require('express');
+var cors = require('cors');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
@@ -77,9 +78,16 @@ if (process.env.BTCEXP_BASIC_AUTH_PASSWORD) {
 	app.use(auth(process.env.BTCEXP_BASIC_AUTH_PASSWORD));
 }
 
+app.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  next();
+});
+
 // uncomment after placing your favicon in /public
 //app.use(favicon(__dirname + '/public/favicon.ico'));
 //app.use(logger('dev'));
+app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
@@ -497,12 +505,15 @@ app.use(function(req, res, next) {
 	}
 
 	var userAgent = req.headers['user-agent'];
-	for (var i = 0; i < crawlerBotUserAgentStrings.length; i++) {
-		if (userAgent.indexOf(crawlerBotUserAgentStrings[i]) != -1) {
-			res.locals.crawlerBot = true;
+	if (userAgent)
+	{
+		for (var i = 0; i < crawlerBotUserAgentStrings.length; i++) {
+			if (userAgent.indexOf(crawlerBotUserAgentStrings[i]) != -1) {
+				res.locals.crawlerBot = true;
+			}
 		}
 	}
-
+	
 	// make a bunch of globals available to templates
 	res.locals.config = global.config;
 	res.locals.coinConfig = global.coinConfig;

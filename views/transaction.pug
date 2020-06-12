@@ -170,7 +170,15 @@ block content
 												a(data-toggle="tooltip", title="6 confirmations is generally considered 'settled'. High-value transactions may require more; low-value transactions may require less.")
 													i.fas.fa-lock
 
-
+							if (result.getrawtransaction.tokenData && result.getrawtransaction.tokenData.tokenTransactionDetails[0] && result.getrawtransaction.tokenData.tokenTransactionDetails[0].transactionDetails)
+								div.row
+									div.summary-table-label Token Trx
+									div.summary-table-content.text-monospace
+										if (result.getrawtransaction.tokenData.tokenTransactionDetails[0].valid == true)
+											span.font-weight-bold.text-success #{result.getrawtransaction.tokenData.tokenTransactionDetails[0].transactionDetails.transactionType} (Valid)
+										else
+											span.font-weight-bold.text-warning #{result.getrawtransaction.tokenData.tokenTransactionDetails[0].transactionDetails.transactionType} (Failed)
+													
 							if (result.getrawtransaction.vin[0].coinbase)
 								div.row
 									div.summary-table-label Fees Collected

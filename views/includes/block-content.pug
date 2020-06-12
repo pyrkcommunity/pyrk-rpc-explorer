@@ -251,7 +251,7 @@ div.tab-content
 													small.ml-1 sat/vB
 
 												else
-													- var currencyValue = new Decimal(result.getblock.totalFees).dividedBy(result.getblock.strippedsize).times(coinConfig.baseCurrencyUnit.multiplier).toDecimalPlaces(1);
+													- var currencyValue = new Decimal(result.getblock.totalFees).dividedBy(result.getblock.size).times(coinConfig.baseCurrencyUnit.multiplier).toDecimalPlaces(1);
 													span #{currencyValue}
 
 												br
@@ -308,6 +308,12 @@ div.tab-content
 
 					div.row
 						div.col-md-6
+						
+							div.row
+								div.summary-split-table-label Algorithm
+								div.summary-split-table-content.text-monospace
+									span #{result.getblock.pow_algo}
+									
 							div.row
 								div.summary-split-table-label Difficulty
 								div.summary-split-table-content.text-monospace

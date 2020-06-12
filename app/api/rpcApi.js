@@ -9,6 +9,8 @@ var utils = require("../utils.js");
 var config = require("../config.js");
 var coins = require("../coins.js");
 
+var pyrkToken = require("./pyrkTokenApi.js");
+
 var activeQueueTasks = 0;
 
 var rpcQueue = async.queue(function(task, callback) {
@@ -52,6 +54,54 @@ function getMiningInfo() {
 
 function getMasternodeStats() {
 	return getRpcDataWithParams({method:"masternode", parameters:["count"]})
+}
+
+function getProposalInfo() {
+
+	return new Promise(function(resolve, reject) {
+	
+		getRpcDataWithParams({method:"masternode", parameters:["count"]}).then(function(mncount) {
+	
+			getRpcDataWithParams({method:"gobject", parameters:["list"]}).then(function(proplist) {
+	
+				var retdata = {mncount: mncount, proplist: proplist};
+				
+				resolve(retdata);
+
+			});
+	
+		});
+	
+	});
+
+}
+
+function getFundedProposalInfo() {
+
+	return new Promise(function(resolve, reject) {
+	
+		getRpcDataWithParams({method:"gobject", parameters:["list", "funding"]}).then(function(proplist) {
+			
+			resolve(proplist);
+
+		});
+	
+	});
+
+}
+
+function getProposalItem(hash) {
+
+	return new Promise(function(resolve, reject) {
+	
+		getRpcDataWithParams({method:"gobject", parameters:["get", hash]}).then(function(propinfo) {
+			
+			resolve(propinfo);
+
+		});
+	
+	});
+
 }
 
 function getMasternodeList() {
@@ -254,7 +304,13 @@ function getRawTransaction(txid) {
 					return;
 				}
 
-				resolve(result);
+				pyrkToken.getTransactionDetails(txid).then(function(tokenData) {
+
+					result.tokenData = tokenData;
+
+					resolve(result);
+				
+				});
 
 			}).catch(function(err) {
 				reject(err);
@@ -513,6 +569,9 @@ module.exports = {
 	getBlockHeaderByHeight: getBlockHeaderByHeight,
 	getMasternodeStats: getMasternodeStats,
 	getMasternodeList: getMasternodeList,
-
+	getProposalInfo: getProposalInfo,
+	getFundedProposalInfo:getFundedProposalInfo,
+	getProposalItem:getProposalItem,
+	
 	minRpcVersions: minRpcVersions
 };

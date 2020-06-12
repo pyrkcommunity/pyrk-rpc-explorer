@@ -234,6 +234,25 @@ function getMasternodeStats() {
 	});
 }
 
+
+function getProposalInfo() {
+	return tryCacheThenRpcApi(miscCache, "getProposalInfo", ONE_SEC, function() {
+		return rpcApi.getProposalInfo();
+	});
+}
+
+function getProposalItem(hash) {
+	return tryCacheThenRpcApi(miscCache, "getProposalItem-" + hash, ONE_SEC, function() {
+		return rpcApi.getProposalItem(hash);
+	});
+}
+
+function getFundedProposalInfo() {
+	return tryCacheThenRpcApi(miscCache, "getFundedProposalInfo", ONE_SEC, function() {
+		return rpcApi.getFundedProposalInfo();
+	});
+}
+
 function getMasternodeList() {
 	return tryCacheThenRpcApi(miscCache, "getMasternodeList", ONE_SEC, function() {
 		return rpcApi.getMasternodeList();
@@ -599,7 +618,7 @@ function getRawTransaction(txid) {
 		return rpcApi.getRawTransaction(txid);
 	};
 
-	return tryCacheThenRpcApi(txCache, "getRawTransaction-" + txid, ONE_HR, rpcApiFunction, shouldCacheTransaction);
+	return tryCacheThenRpcApi(txCache, "getRawTransactionx-" + txid, ONE_MIN, rpcApiFunction, shouldCacheTransaction);
 }
 
 /*
@@ -630,7 +649,7 @@ function getSummarizedTransactionOutput(txid, voutIndex) {
 		});
 	};
 
-	return tryCacheThenRpcApi(txCache, `txoSummary-${txid}-${voutIndex}`, ONE_HR, rpcApiFunction, function() { return true; });
+	return tryCacheThenRpcApi(txCache, `txoSummary-${txid}-${voutIndex}`, ONE_MIN, rpcApiFunction, function() { return true; });
 }
 
 function getTxUtxos(tx) {
@@ -652,7 +671,7 @@ function getTxUtxos(tx) {
 
 function getUtxo(txid, outputIndex) {
 	return new Promise(function(resolve, reject) {
-		tryCacheThenRpcApi(miscCache, "utxo-" + txid + "-" + outputIndex, ONE_HR, function() {
+		tryCacheThenRpcApi(miscCache, "utxo-" + txid + "-" + outputIndex, ONE_MIN, function() {
 			return rpcApi.getUtxo(txid, outputIndex);
 
 		}).then(function(result) {
@@ -672,13 +691,13 @@ function getUtxo(txid, outputIndex) {
 }
 
 function getMempoolTxDetails(txid, includeAncDec) {
-	return tryCacheThenRpcApi(miscCache, "mempoolTxDetails-" + txid + "-" + includeAncDec, ONE_HR, function() {
+	return tryCacheThenRpcApi(miscCache, "mempoolTxDetails-" + txid + "-" + includeAncDec, ONE_MIN, function() {
 		return rpcApi.getMempoolTxDetails(txid, includeAncDec);
 	});
 }
 
 function getAddress(address) {
-	return tryCacheThenRpcApi(miscCache, "getAddress-" + address, ONE_HR, function() {
+	return tryCacheThenRpcApi(miscCache, "getAddress-" + address, ONE_MIN, function() {
 		return rpcApi.getAddress(address);
 	});
 }
@@ -1051,6 +1070,8 @@ module.exports = {
 	getBlockDiffByHeight: getBlockDiffByHeight,
 	getBlockDiffsByHeight: getBlockDiffsByHeight,
 	getMasternodeStats: getMasternodeStats,
-	getMasternodeList: getMasternodeList
-
+	getMasternodeList: getMasternodeList,
+	getProposalInfo: getProposalInfo,
+	getFundedProposalInfo: getFundedProposalInfo,
+	getProposalItem:getProposalItem
 };

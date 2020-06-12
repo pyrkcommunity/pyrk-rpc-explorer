@@ -75,9 +75,9 @@ div.table-responsive
 							span #{block.pow_algo}
 
 						td.data-cell.text-monospace.text-right
-							if (sort != "asc" && blockIndex == 0 && offset == 0 && timeAgoTime > (15 * 60 * 1000))
+							if (sort != "asc" && blockIndex == 0 && offset == 0 && timeAgoTime > (5 * 60 * 1000))
 								- var timeAgoTime = block.time;
-								span.text-danger.border-dotted(title="It's been > 15 min since this latest block.", data-toggle="tooltip")
+								span.text-danger.border-dotted(title="It's been > 5 min since this latest block.", data-toggle="tooltip")
 									include ./time-ago-text.pug
 							else
 								- var timeAgoTime = block.time;
@@ -86,9 +86,9 @@ div.table-responsive
 						td.data-cell.text-monospace.text-right
 							if (timeDiff)
 								- var colorClass = "text-muted";
-								if (timeDiff < 300000)
+								if (timeDiff < 90000)
 									- var colorClass = "text-success";
-								if (timeDiff > 900000)
+								if (timeDiff > 180000)
 									- var colorClass = "text-danger";
 
 								span.font-weight-light(class=colorClass)

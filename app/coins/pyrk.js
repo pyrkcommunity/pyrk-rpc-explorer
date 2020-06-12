@@ -58,7 +58,6 @@ module.exports = {
 	nodeUrl:"https://www.pyrk.org/",
 	demoSiteUrl: "https://explorer2.pyrk.org",
 	miningPoolsConfigUrls:[
-		"https://raw.githubusercontent.com/hashstream/pools/master/pools.json",
 	],
 	maxBlockWeight: 4000000,
 	maxBlockSize: 2000000,
@@ -130,6 +129,15 @@ module.exports = {
 			blockHash: "409dc030c014eeb53544005157f7f0d9bcacc9d1fde1c1fbbeada174dd0e0b91",
 			summary: "The first block containing rewards for masternodes.",
 			referenceUrl: ""
+		},
+		{
+			type: "blockheight",
+			date: "2020-06-04",
+			chain: "main",
+			blockHeight: 25000,
+			blockHash: "000000000000000feb054686168fafb67897a5766c1ffeafed713889e0f18728",
+			summary: "The first block holding back 10% for community fund.",
+			referenceUrl: ""
 		}
 	],
 	exchangeRateData:{
@@ -144,6 +152,12 @@ module.exports = {
 		}
 	},
 	blockRewardFunction:function(blockHeight) {
+	
+		if (blockHeight < 25000) return 100;
+		else if (blockHeight < 200000) return 90;
+		else if (blockHeight < 400000) return 72;
+	
+	/*
 		var eras = [ new Decimal8(100) ];
 		for (var i = 1; i < 34; i++) {
 			var previous = eras[i - 1];
@@ -153,5 +167,7 @@ module.exports = {
 		var index = Math.floor(blockHeight / 200000);
 
 		return eras[index];
+	*/
+	
 	}
 };

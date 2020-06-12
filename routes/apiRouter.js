@@ -22,6 +22,61 @@ var addressApi = require("./../app/api/addressApi.js");
 
 const forceCsrf = csurf({ ignoreMethods: [] });
 
+router.get("/gettopblock", function(req, res, next) {
+
+	coreApi.getMiningInfo().then(function(result) {
+	
+		var blockHeight = result.blocks;
+		
+		coreApi.getBlockHeaderByHeight(blockHeight).then(function(bresult) {
+
+			coreApi.getBlockByHash(bresult.hash).then(function(fresult) {
+				res.json(fresult);
+
+				next();
+			});
+
+		});
+
+	});
+
+});
+
+router.get("/getproposalinfo", function(req, res, next) {
+
+	coreApi.getProposalInfo().then(function(result) {
+	
+		res.json(result);
+
+		next();
+	});
+
+});
+
+router.get("/getproposalitem/:hash", function(req, res, next) {
+
+	var hash = req.params.hash;
+
+
+	coreApi.getProposalItem(hash).then(function(result) {
+	
+		res.json(result);
+
+		next();
+	});
+
+});
+
+router.get("/getfundedproposalinfo", function(req, res, next) {
+
+	coreApi.getFundedProposalInfo().then(function(result) {
+	
+		res.json(result);
+
+		next();
+	});
+
+});
 
 router.get("/getdifficulties", function(req, res, next) {
 
@@ -78,7 +133,7 @@ router.get("/getblock", function(req, res, next) {
 router.get("/getmoneysupply", function(req, res, next) {
 
 	coreApi.getUtxoSetSummary().then(function(result) {
-		res.json(result.total_amount);
+		res.json(parseFloat(result.total_amount));
 
 		next();
 	});
@@ -86,10 +141,58 @@ router.get("/getmoneysupply", function(req, res, next) {
 });
 
 
+router.get("/getinfo", function(req, res, next) {
 
+	var method = 'getinfo';
+	var params = null;
 
+	global.rpcClientNoTimeout.command([{method:method, parameters:params}], function(err, result, resHeaders) {
+		debugLog("RPC Response: err=" + err + ", result=" + result + ", headers=" + resHeaders);
 
+		res.json(result[0]);
 
+		next();
+	});
+
+});
+
+router.get("/gettransaction/:txid", function(req, res, next) {
+	var txid = req.params.txid;
+
+	var promises = [];
+
+	promises.push(coreApi.getRawTransaction(txid));
+
+	Promise.all(promises).then(function(results) {
+		res.json(results[0]);
+
+		next();
+
+	}).catch(function(err) {
+		res.json({success:false, error:err});
+
+		next();
+	});
+});
+
+router.get("/getblock/:hash", function(req, res, next) {
+	var hash = req.params.hash;
+
+	var promises = [];
+
+	promises.push(coreApi.getBlockByHash(hash));
+
+	Promise.all(promises).then(function(results) {
+		res.json(results[0]);
+
+		next();
+
+	}).catch(function(err) {
+		res.json({success:false, error:err});
+
+		next();
+	});
+});
 
 
 router.get("/blocks-by-height/:blockHeights", function(req, res, next) {
